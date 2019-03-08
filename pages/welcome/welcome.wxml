@@ -1,0 +1,9 @@
+<!--pages/welcome/welcome.wxml-->
+<view class="container">
+    <image bindtap="music_control" src="../../images/tab/music.svg" class='music' style="animation-play-state:{{animation}}"></image>
+    <image  bindtap="viewTap" src="{{avatar}}" class="avatar"></image>
+    <text class="nickname">Hello , {{nickName}}</text>
+    <view class="introduction">
+        <text>噜噜噜</text>
+    </view>
+</view>
