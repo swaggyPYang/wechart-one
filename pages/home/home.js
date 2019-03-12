@@ -22,36 +22,58 @@ Page({
   // 取得vols列表id对应的详细数据
   getHps: function (idList) {
     let hps = this.data.hps;
+    for(let i = 0 ;i<idList.length;i++){
+      var hp = idList.shift();
 
-    if (idList.length > 0) {
-      api.getHpDetailById({
-        query: {
-          id: idList.shift()
-        },
-        success: (res) => {
-          if (res.data.res === 0) {
-            let hp = res.data.data;
-            hp.hp_makettime = util.formatHpMakettime(hp.hp_makettime);
-            hp.hp_author = util.formatHpAuthor(hp.hp_author);
-            hp.hp_content = util.formatHpContent(hp.hp_content);
-            // 设置本地存储，实现收藏
-            let hpsIsCollected = wx.getStorageSync('hps_is_collected') || {};
-            if (hpsIsCollected[hp.hpcontent_id]) {
-              let isCollected = hpsIsCollected[hp.hpcontent_id];
-              hp.is_collected = isCollected;
-            } else {
-              hpsIsCollected[hp.hpcontent_id] = false;
-              hp.is_collected = false;
-              wx.setStorageSync('hps_is_collected', hpsIsCollected);
-            }
-            hps.push(hp);
-          }
-          this.getHps(idList);
-        }
-      });
-    } else {
-      this.setData({ hps });
+      // let hp = res.data.data;
+      hp.date = hp.date;
+      hp.picture_author = util.formatHpAuthor(hp.picture_author);
+      hp.content = util.formatHpContent(hp.content);
+      // 设置本地存储，实现收藏
+      let hpsIsCollected = wx.getStorageSync('hps_is_collected') || {};
+      if (hpsIsCollected[hp.id]) {
+        let isCollected = hpsIsCollected[hp.id];
+        hp.is_collected = isCollected;
+      } else {
+        hpsIsCollected[hp.id] = false;
+        hp.is_collected = false;
+        wx.setStorageSync('hps_is_collected', hpsIsCollected);
+      }
+      hps.push(hp);
+      if (i = idList.length-1){
+        this.setData({ hps });
+      }
     }
+    // if (idList.length > 0) {
+    //   console.log(idList.shift());
+    //   api.getHpDetailById({
+    //     query: {
+    //       id: idList.shift()
+    //     },
+    //     success: (res) => {
+    //       if (res.data.res === 0) {
+    //         let hp = res.data.data;
+    //         hp.hp_makettime = util.formatHpMakettime(hp.hp_makettime);
+    //         hp.hp_author = util.formatHpAuthor(hp.hp_author);
+    //         hp.hp_content = util.formatHpContent(hp.hp_content);
+    //         // 设置本地存储，实现收藏
+    //         let hpsIsCollected = wx.getStorageSync('hps_is_collected') || {};
+    //         if (hpsIsCollected[hp.hpcontent_id]) {
+    //           let isCollected = hpsIsCollected[hp.hpcontent_id];
+    //           hp.is_collected = isCollected;
+    //         } else {
+    //           hpsIsCollected[hp.hpcontent_id] = false;
+    //           hp.is_collected = false;
+    //           wx.setStorageSync('hps_is_collected', hpsIsCollected);
+    //         }
+    //         hps.push(hp);
+    //       }
+    //       this.getHps(idList);
+    //     }
+    //   });
+    // } else {
+    //   this.setData({ hps });
+    // }
   },
   // 小记跳转详情
   viewDetailTap: function (event) {
@@ -105,7 +127,7 @@ Page({
     // 更新数据
     let hps = this.data.hps;
     for (let i = 0; i < hps.length; i++) {
-      if (hps[i].hpcontent_id === hpId) {
+      if (hps[i].id === hpId) {
         hps[i].is_collected = isCollected;
       }
     }

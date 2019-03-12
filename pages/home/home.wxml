@@ -1,7 +1,7 @@
 <!--pages/home/home.wxml-->
 <view class="container">
     <swiper class="hp-swiper" current="{{current}}" bindchange="handleChange">
-        <block wx:for="{{hps}}" wx:for-index="idx" wx:key="{{hpcontent_id}}">
+        <block wx:for="{{hps}}" wx:for-index="idx" wx:key="{{id}}">
             <swiper-item class="hp-swiper-item">
                 <import src="templates/hp.wxml" />
                 <template is="hp" data="{{item: item}}" />

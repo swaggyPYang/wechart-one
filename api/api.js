@@ -1,3 +1,25 @@
+let TOKEN = "";
+let COOKIE = "";
+function getToken () {
+  return new Promise((RES, REJ) => {
+    if (TOKEN) return RES(TOKEN);
+    wx.request({
+      url: 'http://m.wufazhuce.com/one',
+      responseType: 'text',
+      success: ret => {
+        COOKIE = ret.header['Set-Cookie'];
+        var _token = ret.data.split("One.token = '")[1].split("'")[0];
+        if (_token && (_token.length === 40)) {
+          TOKEN = _token;
+          return RES(_token);
+        }
+        REJ()
+      },
+      fail: REJ
+    })
+  })
+}
+
 const perfix = "http://v3.wufazhuce.com:8000/api/";
 const wxRequest = (params, url) => {
     wx.showLoading({
@@ -7,7 +29,8 @@ const wxRequest = (params, url) => {
         url: url,
         data: params.data || '',
         header: {
-            'content-type': 'application/json'
+          'content-type': 'application/json',
+          'Cookie': COOKIE
         },
         method: params.method || 'GET',
         success: (res) => {
@@ -24,9 +47,20 @@ const wxRequest = (params, url) => {
 }
 
 // home
-const getHpIdList = (params) => wxRequest(params, perfix + 'onelist/idlist');
+// const getHpIdList = (params) => wxRequest(params, perfix + 'onelist/idlist');
+const getHpIdList = function(params){
+  getToken().then(function(token){
+    console.log(COOKIE)
+    console.log(TOKEN)
+    return wxRequest(params, "http://m.wufazhuce.com/one/ajaxlist/0?_token=" + TOKEN)
+  })
+
+  
+}
+
+
 const getHpDetailById = (params) => wxRequest(params, perfix + 'onelist/' + params.query.id);
-const getHpByMonth = (params) => wxRequest(params, perfix + 'hp/bymonth/' + params.query.month);
+// const getHpByMonth = (params) => wxRequest(params, perfix + 'hp/bymonth/' + params.query.month);
 
 // read
 const getReadingCarousel = (params) => wxRequest(params, perfix + 'reading/carousel');
@@ -56,7 +90,7 @@ const getAddress = (params) => wxRequest(params, 'http://apis.map.qq.com/ws/loca
 module.exports = {
     getHpIdList,
     getHpDetailById,
-    getHpByMonth,
+    // getHpByMonth,
     getReadingCarousel,
     getReadingCarouselById,
     getReadingIndex,
