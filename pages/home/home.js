@@ -23,7 +23,7 @@ Page({
   getHps: function (idList) {
     let hps = this.data.hps;
     for(let i = 0 ;i<idList.length;i++){
-      var hp = idList.shift();
+      var hp = idList[i];
 
       // let hp = res.data.data;
       hp.date = hp.date;
@@ -40,7 +40,7 @@ Page({
         wx.setStorageSync('hps_is_collected', hpsIsCollected);
       }
       hps.push(hp);
-      if (i = idList.length-1){
+      if (i == idList.length-1){
         this.setData({ hps });
       }
     }
@@ -77,9 +77,9 @@ Page({
   },
   // 小记跳转详情
   viewDetailTap: function (event) {
-    let hpId = event.currentTarget.dataset.hpId;
+    let hpId = event.currentTarget.dataset.id;
     wx.navigateTo({
-      url: 'detail/detail?id=' + hpId 
+      url: 'http://m.wufazhuce.com/one/' + id 
     });
   },
   // 滑动卡片到最后一张跳转历史
